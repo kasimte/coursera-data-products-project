@@ -6,7 +6,7 @@ library(datasets)
 shinyServer(
     function(input, output) {
         
-        dataset <- data(rock)
+        dataset <- rock
         
         # Generate a summary of the dataset
         output$summary <- renderPrint({
