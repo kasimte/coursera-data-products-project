@@ -4,21 +4,23 @@ library(shiny)
 data(rock)
 
 shinyUI(pageWithSidebar(
-    headerPanel("Rock Data"),
+    headerPanel("US Arrests Based on Urban Population"),
     sidebarPanel(
-        numericInput("obs", "Number of observations to view:", 10),        
-        helpText("Note: while the data view will show only the specified",
-                 "number of observations, the summary will still be based",
-                 "on the full dataset."),
         
-        submitButton("Update View")
+        sliderInput("urbanPop", 
+                    "Urban Population Percent:", 
+                    min = 1,
+                    max = 100, 
+                    value = 50),
+                
+        helpText("This shiny application uses the 'USArrests' dataset in R ",
+                 "and displays the results of a few linear models predicting arrests ",
+                 "based on urban population percentage.")
     ),
     mainPanel(
-#        plotOutput('myHist')
-        h4("Summary"),
-        verbatimTextOutput("summary"),
-        
-        h4("Observations"),
-        tableOutput("view")
+        textOutput("percent"),
+        textOutput("murderResult"),
+        textOutput("assaultResult"),
+        textOutput("rapeResult")
     )
 ))
