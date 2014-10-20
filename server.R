@@ -6,24 +6,41 @@ library(datasets)
 shinyServer(
     function(input, output) {
         
-        dataset <- rock
+        data <- USArrests
         
-        output$main_plot <- renderPlot({
-            hist(rock$area,
-                 probability = TRUE,
-                 breaks = as.numeric(input$n_breaks),
-                 xlab = "area of pores space, in pixels out of 256 by 256",
-                 main = "Rock cross-section sample pore area")
+        dataInput <- reactive({
+            input$urbanPop
         })
         
-        # Generate a summary of the dataset
-        output$summary <- renderPrint({
-            summary(dataset)
+        output$percent <- renderText({
+            paste("For an urban population of", 
+                  dataInput(),
+                  "percent, our model predicts...")
         })
         
-        # Show the first "n" observations
-        output$view <- renderTable({
-            head(dataset, n = input$obs)
+        murderModel <- lm(Murder ~ UrbanPop, data=data)                
+        
+        output$murderResult <- renderText({
+            murder <- predict(murderModel, 
+                               data.frame(UrbanPop = c(dataInput()))) 
+            paste(murder, "murders,")
         })
+        
+        assaultModel <- lm(Assault ~ UrbanPop, data=data)                
+
+        output$assaultResult <- renderText({
+            assault <- predict(assaultModel, 
+                               data.frame(UrbanPop = c(dataInput()))) 
+            paste(assault, "assaults, and")
+        })
+        
+        rapeModel <- lm(Rape ~ UrbanPop, data=data)
+        
+        output$rapeResult <- renderText({
+            rape <- predict(rapeModel, 
+                            data.frame(UrbanPop = c(dataInput()))) 
+            paste(rape, "rapes per 100,000 people per year.")
+        })
+        
     }
 )
